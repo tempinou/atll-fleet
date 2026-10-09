@@ -13,8 +13,14 @@
   "documentationUrl": "https://docs.fleetbase.io",
   "forumUrl": "https://github.com/fleetbase/fleetbase/discussions",
   "packagerName": "DevClics",
-  "packagerUrl": "https://github.com/tempinou/fleetbase-cloudron",
+  "packagerUrl": "https://github.com/tempinou/atll-fleet",
   "icon": "file://logo.png",
+  "iconUrl": "https://raw.githubusercontent.com/tempinou/atll-fleet/main/logo.png",
+  "mediaLinks": [
+    "https://fleetbase.io/images/screenshots/fleet-ops/fleet-ops-orders-map.webp",
+    "https://fleetbase.io/images/screenshots/fleet-ops/fleet-ops-orders-board.webp",
+    "https://fleetbase.io/images/screenshots/ledger/ledger-dashboard.webp"
+  ],
   "tags": [
     "logistics",
     "fleet",

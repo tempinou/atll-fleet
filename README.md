@@ -7,13 +7,13 @@ Paquet communautaire [Cloudron](https://docs.cloudron.io/apps#community-app) pou
 Dans l'App Store du tableau de bord → *Add custom app* → coller l'URL du fichier `CloudronVersions.json` de ce dépôt :
 
 ```
-https://github.com/tempinou/fleetbase-cloudron/blob/main/CloudronVersions.json
+https://github.com/tempinou/atll-fleet/blob/main/CloudronVersions.json
 ```
 
 ou en ligne de commande :
 
 ```bash
-cloudron install --versions-url https://github.com/tempinou/fleetbase-cloudron/blob/main/CloudronVersions.json -l fleet.example.com
+cloudron install --versions-url https://github.com/tempinou/atll-fleet/blob/main/CloudronVersions.json -l fleet.example.com
 ```
 
 ## Architecture du conteneur
