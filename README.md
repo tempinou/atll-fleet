@@ -43,13 +43,30 @@ Données persistantes (`/app/data`) :
 
 ## Construction et publication
 
+Avec le CLI Cloudron ≥ 9 et une app *Container Registry* (qui fait aussi service de build) :
+
 ```bash
-cloudron build --repository build.devclics.com/<user>/io.fleetbase.cloudronapp --tag 0.1.0
-cloudron install -l fleet.example.com          # test
-cloudron versions add --state testing          # ajoute l'image construite à CloudronVersions.json
+cloudron builder login https://registry.example.com      # utilisateur Cloudron + mot de passe d'application
+cloudron builder build --repository <user>/io.fleetbase.cloudronapp --tag 0.1.0
+cloudron install --image registry.example.com/<user>/io.fleetbase.cloudronapp:0.1.0 -l fleet.example.com   # test
+cloudron versions add --state testing                    # ajoute l'image construite à CloudronVersions.json
 ```
 
+Le dépôt d'images doit être public (ou le registre déclaré comme registre privé sur les Cloudron qui installent le paquet).
+
 L'image part des images officielles `fleetbase/fleetbase-api` et `fleetbase/fleetbase-console` de la release (pas de recompilation). Pour une nouvelle version de Fleetbase : mettre à jour les tags/digests dans le `Dockerfile`, `upstreamVersion` et `version` dans `CloudronManifest.json`, le `CHANGELOG`, rebâtir, puis `cloudron versions add`.
+
+## Adaptations apportées à Fleetbase
+
+Toutes appliquées à la construction, et toutes font échouer le build si le code visé a changé :
+
+| Quoi | Pourquoi |
+|---|---|
+| Bundle de la console : port WebSocket 443, config runtime activée, hachages SRI recalculés | la release fige le port 38000 et désactive `fleetbase.config.json` |
+| `patches/quote-database-name.php` | le préfixe de base Cloudron (hexadécimal, ex. `1e08…`) est lu comme un nombre par MySQL dans les migrations qui référencent la base principale en SQL brut |
+| `patches/mysql84-foreign-keys.php` | Cloudron fournit MySQL 8.4, qui refuse par défaut les clés étrangères vers une colonne non unique (erreur 6125) ; levé par session |
+| `createdb.php` (au démarrage) | avec `multipleDatabases`, c'est à l'app de créer ses bases ; `artisan mysql:createdb` ne protège pas les noms |
+| `oauth/` | driver OIDC pour les comptes Cloudron |
 
 ## Limites connues
 
