@@ -84,6 +84,13 @@ RUN set -eu; cfg=/fleetbase/api/vendor/fleetbase/core-api/config/oauth.php; \
     && php -l /fleetbase/api/vendor/fleetbase/core-api/src/Auth/OAuth/Socialite/CloudronProvider.php; \
     chown www-data:www-data "$cfg" /fleetbase/api/vendor/fleetbase/core-api/src/Auth/OAuth/Drivers/CloudronDriver.php /fleetbase/api/vendor/fleetbase/core-api/src/Auth/OAuth/Socialite/CloudronProvider.php
 
+# --- Préfixe de base Cloudron pouvant être lu comme un nombre par MySQL : les
+# migrations référencent la base principale en SQL brut via un helper unique,
+# qu'on fait renvoyer entre backticks (voir patches/quote-database-name.php).
+COPY patches/quote-database-name.php /tmp/quote-database-name.php
+RUN set -eu; u=/fleetbase/api/vendor/fleetbase/core-api/src/Support/Utils.php; \
+    php /tmp/quote-database-name.php "$u" && php -l "$u" && rm -f /tmp/quote-database-name.php
+
 COPY nginx.conf supervisord.conf env.sh env.template fleetbase.config.json /app/code/
 COPY start.sh schedule.sh createdb.php /app/code/
 

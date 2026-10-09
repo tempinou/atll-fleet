@@ -1,9 +1,14 @@
 <?php
-// Crée les bases MySQL de Fleetbase (principale + sandbox) si elles n'existent
-// pas. Avec l'addon mysql « multipleDatabases », Cloudron ne crée aucune base :
-// l'application doit le faire, et `artisan mysql:createdb` ne le peut pas car il
-// ouvre d'abord une connexion sur la base configurée (inexistante au premier
-// démarrage). Ici on se connecte sans base sélectionnée.
+// Crée les bases MySQL de Fleetbase (principale, sandbox, storefront) si elles
+// n'existent pas. Avec l'addon mysql « multipleDatabases », Cloudron ne crée
+// aucune base : l'application doit le faire. `artisan mysql:createdb` ne convient
+// pas : il ouvre d'abord une connexion sur la base configurée (inexistante au
+// premier démarrage) et n'entoure pas le nom de backticks, or le préfixe attribué
+// par Cloudron peut commencer par un chiffre (« 1e08… » est lu comme un nombre).
+// Ici on se connecte sans base sélectionnée et on protège les noms.
+//
+// Liste à compléter si une extension serveur déclare une base supplémentaire
+// (clé « create-database » dans son composer.json) — seule storefront le fait.
 
 $host     = getenv('DB_HOST');
 $port     = getenv('DB_PORT') ?: '3306';
@@ -21,7 +26,7 @@ $pdo = new PDO("mysql:host={$host};port={$port}", $user, $password, [
     PDO::ATTR_TIMEOUT => 10,
 ]);
 
-foreach ([$database, $database . '_sandbox'] as $name) {
+foreach ([$database, $database . '_sandbox', $database . '_storefront'] as $name) {
     if (!preg_match('/^[A-Za-z0-9_]+$/', $name)) {
         fwrite(STDERR, "createdb: nom de base invalide : {$name}\n");
         exit(1);
