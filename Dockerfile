@@ -51,7 +51,13 @@ RUN set -eu; \
     h256="$(openssl dgst -sha256 -binary "$f" | base64 | tr -d '\n')"; \
     h512="$(openssl dgst -sha512 -binary "$f" | base64 | tr -d '\n')"; \
     sed -i "\#$b#s#integrity=\"[^\"]*\"#integrity=\"sha256-$h256 sha512-$h512\"#" "$idx"; \
-    grep -q "sha512-$h512" "$idx"
+    grep -q "sha512-$h512" "$idx"; \
+    # Cloudron sert l'app avec « Referrer-Policy: same-origin » : le navigateur n'envoie
+    # alors aucun Referer aux serveurs de tuiles OpenStreetMap, qui bloquent ces requêtes
+    # (403 « Access blocked »). La balise meta rétablit l'envoi de l'origine seule.
+    grep -q '<meta charset="utf-8" />' "$idx"; \
+    sed -i 's#<meta charset="utf-8" />#<meta charset="utf-8" />\n    <meta name="referrer" content="strict-origin-when-cross-origin" />#' "$idx"; \
+    grep -q 'name="referrer"' "$idx"
 
 # --- API Laravel : sortir les chemins inscriptibles de l'image
 #  storage/          -> /app/data/storage   (uploads, sessions, logs, caches)

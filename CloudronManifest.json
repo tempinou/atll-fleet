@@ -4,7 +4,7 @@
   "tagline": "Plateforme logistique open source : TMS, gestion de flotte et livraison",
   "description": "file://DESCRIPTION.md",
   "changelog": "file://CHANGELOG",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "upstreamVersion": "0.7.68",
   "manifestVersion": 2,
   "healthCheckPath": "/",

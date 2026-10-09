@@ -1,3 +1,6 @@
 [0.1.0]
 * Premier paquet
 * Fleetbase Community 0.7.68
+
+[0.1.1]
+* Carte : les tuiles OpenStreetMap étaient bloquées (403) derrière Cloudron, faute de Referer
