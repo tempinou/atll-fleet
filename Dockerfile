@@ -85,7 +85,7 @@ RUN set -eu; cfg=/fleetbase/api/vendor/fleetbase/core-api/config/oauth.php; \
     chown www-data:www-data "$cfg" /fleetbase/api/vendor/fleetbase/core-api/src/Auth/OAuth/Drivers/CloudronDriver.php /fleetbase/api/vendor/fleetbase/core-api/src/Auth/OAuth/Socialite/CloudronProvider.php
 
 COPY nginx.conf supervisord.conf env.sh env.template fleetbase.config.json /app/code/
-COPY start.sh schedule.sh /app/code/
+COPY start.sh schedule.sh createdb.php /app/code/
 
 RUN chmod +x /app/code/start.sh /app/code/schedule.sh \
     && mkdir -p /run/nginx && nginx -t -c /app/code/nginx.conf && rm -rf /run/nginx

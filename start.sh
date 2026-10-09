@@ -32,6 +32,7 @@ cd /fleetbase/api
 artisan() { gosu www-data php artisan "$@"; }
 
 echo "==> Fleetbase: base de données et migrations"
+gosu www-data php /app/code/createdb.php
 artisan mysql:createdb
 artisan migrate --force
 artisan sandbox:migrate --force
