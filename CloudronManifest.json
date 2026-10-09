@@ -1,0 +1,46 @@
+{
+  "id": "io.fleetbase.cloudronapp",
+  "title": "Fleetbase",
+  "tagline": "Plateforme logistique open source : TMS, gestion de flotte et livraison",
+  "description": "file://DESCRIPTION.md",
+  "changelog": "file://CHANGELOG",
+  "version": "0.1.0",
+  "upstreamVersion": "0.7.68",
+  "manifestVersion": 2,
+  "healthCheckPath": "/",
+  "httpPort": 8000,
+  "website": "https://fleetbase.io",
+  "documentationUrl": "https://docs.fleetbase.io",
+  "forumUrl": "https://github.com/fleetbase/fleetbase/discussions",
+  "packageUrl": "https://github.com/tempinou/fleetbase-cloudron",
+  "packagerName": "DevClics",
+  "packagerUrl": "https://github.com/tempinou/fleetbase-cloudron",
+  "icon": "file://logo.png",
+  "tags": [
+    "logistics",
+    "fleet",
+    "delivery",
+    "tms",
+    "erp"
+  ],
+  "memoryLimit": 2147483648,
+  "minBoxVersion": "9.1.0",
+  "addons": {
+    "localstorage": {},
+    "mysql": {
+      "multipleDatabases": true
+    },
+    "redis": {},
+    "sendmail": {
+      "supportsDisplayName": true
+    },
+    "scheduler": {
+      "laravel": {
+        "schedule": "* * * * *",
+        "command": "/app/code/schedule.sh"
+      }
+    }
+  },
+  "postInstallMessage": "file://POSTINSTALL.md",
+  "configurePath": "/console/admin"
+}
