@@ -34,6 +34,9 @@
     "sendmail": {
       "supportsDisplayName": true
     },
+    "oidc": {
+      "loginRedirectUri": "/int/v1/auth/oauth/cloudron/callback"
+    },
     "scheduler": {
       "laravel": {
         "schedule": "* * * * *",
@@ -41,6 +44,7 @@
       }
     }
   },
+  "optionalSso": true,
   "postInstallMessage": "file://POSTINSTALL.md",
   "configurePath": "/console/admin"
 }

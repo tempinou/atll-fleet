@@ -70,6 +70,20 @@ RUN set -eu; cd /fleetbase/api; \
     cp vendor/laravel/octane/src/Commands/stubs/frankenphp-worker.php public/frankenphp-worker.php; \
     chown -h www-data:www-data storage bootstrap/cache .env .fleetbase-id public/storage public/frankenphp-worker.php
 
+# --- Connexion avec les comptes Cloudron (addon oidc) : Fleetbase n'a pas de
+# fournisseur OIDC générique, on ajoute un driver "cloudron" (deux classes PSR-4
+# dans core-api) et son entrée dans config/oauth.php, lue via les CLOUDRON_OIDC_*.
+COPY oauth/CloudronProvider.php /fleetbase/api/vendor/fleetbase/core-api/src/Auth/OAuth/Socialite/CloudronProvider.php
+COPY oauth/CloudronDriver.php /fleetbase/api/vendor/fleetbase/core-api/src/Auth/OAuth/Drivers/CloudronDriver.php
+COPY oauth/providers.php /tmp/oauth-providers.php
+RUN set -eu; cfg=/fleetbase/api/vendor/fleetbase/core-api/config/oauth.php; \
+    grep -q "^    'providers' => \[" "$cfg"; \
+    sed -i "/^    'providers' => \[/r /tmp/oauth-providers.php" "$cfg"; \
+    grep -q "'cloudron' => \[" "$cfg"; rm -f /tmp/oauth-providers.php; \
+    php -l "$cfg" && php -l /fleetbase/api/vendor/fleetbase/core-api/src/Auth/OAuth/Drivers/CloudronDriver.php \
+    && php -l /fleetbase/api/vendor/fleetbase/core-api/src/Auth/OAuth/Socialite/CloudronProvider.php; \
+    chown www-data:www-data "$cfg" /fleetbase/api/vendor/fleetbase/core-api/src/Auth/OAuth/Drivers/CloudronDriver.php /fleetbase/api/vendor/fleetbase/core-api/src/Auth/OAuth/Socialite/CloudronProvider.php
+
 COPY nginx.conf supervisord.conf env.sh env.template fleetbase.config.json /app/code/
 COPY start.sh schedule.sh /app/code/
 

@@ -26,7 +26,13 @@ cloudron install --versions-url https://github.com/tempinou/fleetbase-cloudron/b
 | SocketCluster | temps réel | 127.0.0.1:38000 |
 | scheduler Cloudron | `php artisan schedule:run` chaque minute | — |
 
-Addons : `mysql` (multipleDatabases — Fleetbase utilise `…fleetbase` et `…fleetbase_sandbox`), `redis`, `sendmail`, `localstorage`, `scheduler`.
+Addons : `mysql` (multipleDatabases — Fleetbase utilise `…fleetbase` et `…fleetbase_sandbox`), `redis`, `sendmail`, `localstorage`, `scheduler`, `oidc` (optionnel).
+
+## Connexion avec les comptes Cloudron (OIDC)
+
+Fleetbase ne livre que Google, Microsoft, GitHub et Apple comme fournisseurs OAuth, mais son architecture permet d'en ajouter un sans toucher à la console. Le dossier [`oauth/`](oauth/) contient un driver `cloudron` (classe Socialite OIDC générique + driver Fleetbase) copié dans `vendor/fleetbase/core-api` à la construction, et une entrée `providers.cloudron` injectée dans `config/oauth.php`, alimentée par les variables `CLOUDRON_OIDC_*` de l'addon. Callback enregistré auprès de Cloudron : `/int/v1/auth/oauth/cloudron/callback`.
+
+Comportement côté Fleetbase (réglable dans *Admin → OAuth settings*) : un compte Cloudron dont l'e-mail correspond à un utilisateur Fleetbase existant à e-mail vérifié est relié automatiquement (`auto_link`) ; sinon, l'assistant d'inscription s'ouvre (`allow_registration`).
 
 Données persistantes (`/app/data`) :
 
@@ -48,5 +54,5 @@ L'image part des images officielles `fleetbase/fleetbase-api` et `fleetbase/flee
 ## Limites connues
 
 - Installation d'extensions depuis le registre Fleetbase impossible (système de fichiers en lecture seule) ; les extensions de la release sont préinstallées.
-- Pas d'intégration SSO Cloudron : Fleetbase gère ses propres comptes.
+- Le SSO Cloudron passe par le mécanisme OAuth de Fleetbase (bouton « Continuer avec Cloudron ») : les comptes Fleetbase restent gérés dans Fleetbase (rôles, organisations), Cloudron ne sert qu'à s'authentifier.
 - Le bundle de la console est patché à la construction (port WebSocket 443, config runtime activée) ; le build échoue si une future version change ces motifs — à adapter alors.
