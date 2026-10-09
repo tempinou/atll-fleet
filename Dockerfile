@@ -91,6 +91,15 @@ COPY patches/quote-database-name.php /tmp/quote-database-name.php
 RUN set -eu; u=/fleetbase/api/vendor/fleetbase/core-api/src/Support/Utils.php; \
     php /tmp/quote-database-name.php "$u" && php -l "$u" && rm -f /tmp/quote-database-name.php
 
+# --- MySQL 8.4 (Cloudron) refuse les clés étrangères vers une colonne non unique,
+# que le schéma de Fleetbase utilise : on lève ce garde-fou par session sur toutes
+# les connexions déclarées (voir patches/mysql84-foreign-keys.php).
+COPY patches/mysql84-foreign-keys.php /tmp/mysql84-foreign-keys.php
+RUN set -eu; cd /fleetbase/api; \
+    files="$(find vendor/fleetbase -name database.connections.php -path '*/config/*' | sort)"; \
+    php /tmp/mysql84-foreign-keys.php $files; \
+    for f in $files; do php -l "$f"; done; rm -f /tmp/mysql84-foreign-keys.php
+
 COPY nginx.conf supervisord.conf env.sh env.template fleetbase.config.json /app/code/
 COPY start.sh schedule.sh createdb.php /app/code/
 
